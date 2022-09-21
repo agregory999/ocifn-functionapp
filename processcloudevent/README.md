@@ -38,7 +38,7 @@ Review the following files in the current folder:
 * the function metadata, [func.yaml](./func.yaml)
 
 
-## Deploy the function
+## Deploy the function 
 In Cloud Shell, run the *fn deploy* command to build the function and its dependencies as a Docker image, 
 push the image to OCIR, and deploy the function to Oracle Functions in your application.
 
