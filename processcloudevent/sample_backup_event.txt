@@ -1,0 +1,36 @@
+{
+  "eventType" : "com.oraclecloud.blockvolumes.createbootvolumebackup.end",
+  "cloudEventsVersion" : "0.1",
+  "eventTypeVersion" : "2.0",
+  "source" : "BlockVolumes",
+  "eventTime" : "2022-09-14T18:04:52Z",
+  "contentType" : "application/json",
+  "data" : {
+    "compartmentId" : "ocid1.compartment.oc1..aaaaaaaa56cet4engnkah7pnrtljo3h55slitvhpmln4lpsi7toeri3qoeqq",
+    "compartmentName" : "CIS235-appdev-cmp",
+    "resourceName" : "notifyBackup",
+    "resourceId" : "ocid1.bootvolumebackup.oc1.iad.abuwcljra66d3zs6avj4iwshe2hftw2zqqqguvb7evvx5zjm6fua26vmlimq",
+    "freeformTags" : { },
+    "definedTags" : {
+      "TagDefaults" : {
+        "Created_by" : "oracleidentitycloudservice/andrew.gregory@oracle.com",
+        "Created_at" : "2022-07-13T13:29:33.107Z"
+      },
+      "CIS235-namesp" : {
+        "CreatedBy" : "oracleidentitycloudservice/andrew.gregory@oracle.com",
+        "CreatedOn" : "2022-07-13T13:29:33.107Z"
+      }
+    },
+    "additionalDetails" : {
+      "sourceType" : "MANUAL",
+      "volumeName" : "stuff (Boot Volume)",
+      "volumeId" : "ocid1.bootvolume.oc1.iad.abuwcljrcrrwgeiuvhjd3snxr3h52ujyp773cxga5ttbxkbtpdouz5t7s23q",
+      "backupState" : "AVAILABLE",
+      "status" : "operationSucceed"
+    }
+  },
+  "eventID" : "17cf38ba-4f7f-42bb-a660-a26e639b9273",
+  "extensions" : {
+    "compartmentId" : "ocid1.compartment.oc1..aaaaaaaa56cet4engnkah7pnrtljo3h55slitvhpmln4lpsi7toeri3qoeqq"
+  }
+}

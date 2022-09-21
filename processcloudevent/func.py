@@ -13,10 +13,14 @@ from fdk import response
 def handler(ctx, data: io.BytesIO=None):
     try:
         body = json.loads(data.getvalue())
-        print("event type: " + body["eventType"])
-        print("compartment name: " + body["data"]["compartmentName"])
-        print("Full Cloud event json data:")
-        print(json.dumps(body, indent=4), flush=True)
+        overview = f'Comp: {body["data"]["compartmentName"]}, \
+            Time: {body["eventTime"]}, Backup Name: {body["data"]["resourceName"]}, \
+            Status: {body["data"]["additionalDetails"]["status"]}'
+        print(overview, flush=True)
+        # print("event type: " + body["eventType"])
+        # print("compartment name: " + body["data"]["compartmentName"])
+        # print("Full Cloud event json data:")
+        # print(json.dumps(body, indent=4), flush=True)
     except (Exception) as ex:
         print('ERROR: Missing key in payload', ex, flush=True)
         raise
