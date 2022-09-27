@@ -5,6 +5,7 @@ import oracledb
 import subprocess
 import datetime
 
+
 from fdk import response
 
 
@@ -29,18 +30,25 @@ def handler(ctx, data: io.BytesIO=None):
         oracledb.init_oracle_client()
         
 
-        with oracledb.connect(user=un, password=pw, dsn=cs) as connection:
+        with oracledb.connect(user=un, password=pw, dsn=cs, tcp_connect_timeout=10) as connection:
+            # The general recommendation for simple SODA usage is to enable autocommit
+            connection.autocommit = True
+
             with connection.cursor() as cursor:
                 sql = """SELECT UNIQUE CLIENT_DRIVER
                     FROM V$SESSION_CONNECT_INFO
                     WHERE SID = SYS_CONTEXT('USERENV', 'SID')"""
                 for r, in cursor.execute(sql):
-                    print(r)
-
-            with connection.getSodaDatabase() as sodadb:
-                collection = sodadb.createCollection("mycollection")
-                returned = collection.insertOneAndGet(body)
-                resp += str(returned)
+                    logging.getLogger().debug(f"Type: {r}")
+            
+            # SODA
+            logging.getLogger().debug(f"Getting SODA")
+            sodadb = connection.getSodaDatabase()
+            logging.getLogger().debug(f"Got SODA: {sodadb}")
+            collection = sodadb.createCollection("mycollection")
+            logging.getLogger().debug(f"Created Collection: {collection}")
+            returned = collection.insertOneAndGet(body)
+            resp += str(returned)
             # with connection.cursor() as cursor:
             #     insert_sql = "insert into BACKUP_EVENTS values (:1, :2, :3, :4, :5)"
             #     sql_resp = cursor.execute(insert_sql, [1, "a", 2, datetime.datetime.now(), 3, datetime.datetime.now(), 4, "1", 5, body])

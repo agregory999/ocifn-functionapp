@@ -1,8 +1,8 @@
 FROM fnproject/python:3.9-dev as build-stage
 WORKDIR /function
 ADD requirements.txt /function/
-RUN groupadd --gid 1000 fn && \
-    adduser --uid 1000 --gid fn fn
+#RUN groupadd --gid 1000 fn && \
+#    adduser --uid 1000 --gid fn fn
 RUN pip3 install --target /python/  --no-cache --no-cache-dir -r requirements.txt &&\
     rm -fr ~/.cache/pip /tmp* requirements.txt func.yaml Dockerfile .venv &&\
     chmod -R o+r /python
