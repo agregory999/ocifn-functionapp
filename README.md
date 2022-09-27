@@ -153,12 +153,12 @@ NOTE - in the image above, you may also configure the rule to deliver email, hit
 
 To see logs that the function generated, look to the Logs area of OCI, as configured at the Function Application layer.  Each function invocation will generate log messages, and the verbosity is controlled with the DEBUG config variable defined above.
 
-[Logging Page](./FunctionLogging.png)
+![Logging Page](./FunctionLogging.png)
 
 Messages come through as such:
 
-[Log Message Debug](./FunctionLogMessage.png)
+![Log Message Debug](./FunctionLogMessage.png)
 
 From the Main Function page, the console also shows metrics around invocations, duration and more.
 
-[Metrics](./FunctionInvocationMetrics.png)
+![Metrics](./FunctionInvocationMetrics.png)
