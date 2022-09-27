@@ -2,8 +2,6 @@ import io
 import json
 import logging
 import oracledb
-import subprocess
-import datetime
 
 
 from fdk import response
@@ -17,9 +15,25 @@ def handler(ctx, data: io.BytesIO=None):
         un = cfg['PYTHON_USERNAME']
         pw = cfg['PYTHON_PASSWORD']
         cs = cfg['PYTHON_CONNECTSTRING']
+        debug = cfg['DEBUG']
+        event_collection = cfg['EVENT_COLLECTION']
     except Exception as ex:
-        logging.getLogger().info(f"Unable to get Config - quitting: {ex}")
-    logging.getLogger().info("Inside Python DB function")
+        logging.getLogger('ocifn-events-adbjson').info(f"Unable to get Config - quitting: {ex}")
+    logging.getLogger('ocifn-events-adbjson').info("Inside Python DB function")
+
+    # Process values from config
+    if debug and debug.lower() == "true":
+        logging.getLogger('ocifn-events-adbjson').setLevel(logging.DEBUG)
+        logging.getLogger('ocifn-events-adbjson').debug(f"DEBUG level set")
+
+    if not un or not pw or not cs or not event_collection:
+        logging.getLogger('ocifn-events-adbjson').error(f"Error: No Config set")
+
+        return response.Response(
+            ctx, response_data=json.dumps(
+                {"message": f"Error: missing configs for function"}),
+            headers={"Content-Type": "application/json"}
+        )
 
     resp = ""
     # Load JSON Data
@@ -29,40 +43,27 @@ def handler(ctx, data: io.BytesIO=None):
         # Enable thick mode
         oracledb.init_oracle_client()
         
-
         with oracledb.connect(user=un, password=pw, dsn=cs, tcp_connect_timeout=10) as connection:
             # The general recommendation for simple SODA usage is to enable autocommit
             connection.autocommit = True
-
-            with connection.cursor() as cursor:
-                sql = """SELECT UNIQUE CLIENT_DRIVER
-                    FROM V$SESSION_CONNECT_INFO
-                    WHERE SID = SYS_CONTEXT('USERENV', 'SID')"""
-                for r, in cursor.execute(sql):
-                    logging.getLogger().debug(f"Type: {r}")
             
-            # SODA
-            logging.getLogger().debug(f"Getting SODA")
+            # SODA insert
+            logging.getLogger('ocifn-events-adbjson').debug(f"Getting SODA")
             sodadb = connection.getSodaDatabase()
-            logging.getLogger().debug(f"Got SODA: {sodadb}")
-            collection = sodadb.createCollection("mycollection")
-            logging.getLogger().debug(f"Created Collection: {collection}")
+            logging.getLogger('ocifn-events-adbjson').debug(f"Got SODA: {sodadb}")
+            collection = sodadb.createCollection(event_collection)
+            logging.getLogger('ocifn-events-adbjson').debug(f"Created Collection: {collection}")
             returned = collection.insertOneAndGet(body)
+            logging.getLogger('ocifn-events-adbjson').debug(f"Inserted: {returned}")
             resp += str(returned)
-            # with connection.cursor() as cursor:
-            #     insert_sql = "insert into BACKUP_EVENTS values (:1, :2, :3, :4, :5)"
-            #     sql_resp = cursor.execute(insert_sql, [1, "a", 2, datetime.datetime.now(), 3, datetime.datetime.now(), 4, "1", 5, body])
-            #     #sql = """select count(*) from BACKUP_EVENTS"""
-            #     #for r in cursor.execute(sql):
-            #     #    print(r)
-            #     #    resp += str(r)
-            #     resp += str(sql_resp)
+
     except Exception as ex:
-        logging.getLogger().error('error parsing json payload: ' + str(ex))
+        logging.getLogger('ocifn-events-adbjson').error('error parsing json payload: ' + str(ex))
         resp += str(ex)
 
+    logging.getLogger('ocifn-events-adbjson').debug(f"Completed - returning response")
     return response.Response(
         ctx, response_data=json.dumps(
-            {"message": f"SQL Res: {resp}"}),
+            {"message": f"Response: {resp}"}),
         headers={"Content-Type": "application/json"}
     )

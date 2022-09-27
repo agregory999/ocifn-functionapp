@@ -30,7 +30,9 @@ This function should run against any database at 19c or higher that has support 
 
 ### SODA Drivers and OracleDB Thick
 
-From the Database Actions menu, the SODA Drivers page explains using the thick driver to access SODA.  Therefore the function was built with a modified Docker file, which adds the oracle client packages.  Once deployed, the thick driver is available to the function code.  
+From the Tools menu on the ADB instance, the SODA Drivers page explains using the thick driver to access SODA.  Therefore the function was built with a modified Docker file, which adds the oracle client packages.  Once deployed, the thick driver is available to the function code. 
+
+[SODA Drivers Main Page](https://www.oracle.com/database/what-is-json/technologies/database/#sodadrivers)
 
 ## Function Deployment
 
@@ -147,4 +149,16 @@ Example rule that invokes this function.
 
 NOTE - in the image above, you may also configure the rule to deliver email, hit a pager, or deliver an additional notification in addition to invoking the function.
 
+## Function Logging
 
+To see logs that the function generated, look to the Logs area of OCI, as configured at the Function Application layer.  Each function invocation will generate log messages, and the verbosity is controlled with the DEBUG config variable defined above.
+
+[Logging Page](./FunctionLogging.png)
+
+Messages come through as such:
+
+[Log Message Debug](./FunctionLogMessage.png)
+
+From the Main Function page, the console also shows metrics around invocations, duration and more.
+
+[Metrics](./FunctionInvocationMetrics.png)
